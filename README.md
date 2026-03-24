@@ -1,1 +1,1 @@
-# decode-labs_internship
+# DecodeLabs Internship
