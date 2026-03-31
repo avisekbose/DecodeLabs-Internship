@@ -44,6 +44,20 @@ ax.set_xlabel(selected_col)
 ax.set_ylabel("Frequency")
 st.pyplot(fig)
 
+st.subheader("📊 Box Plot Analysis")
+fig, ax = plt.subplots(figsize=(12,5))
+ax.boxplot(df[selected_col])
+ax.set_title(f"Box Plot of {selected_col}")
+ax.set_xlabel(selected_col)
+ax.set_ylabel(selected_col)
+st.pyplot(fig)
+
+st.subheader("📊 Correlation Heatmap")
+corr = filtered_df[numerical_cols].corr()
+fig, ax = plt.subplots(figsize=(12, 5))
+sns.heatmap(corr, annot=True, cmap='coolwarm', ax=ax)
+st.pyplot(fig)
+
 # Monthly Trend
 st.subheader("📈 Monthly Orders Trend")
 monthly_orders = filtered_df.groupby(filtered_df['Date'].dt.to_period('M')).size()
