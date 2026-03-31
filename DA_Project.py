@@ -1,0 +1,148 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
+
+# Load the dataset
+df = pd.read_excel('Dataset for Data Analytics.xlsx')
+df.fillna({'CouponCode':'NO COUPON'}, inplace=True) # Handling Null Values imputing with no coupon
+
+# Page configuration
+st.set_page_config(page_title="E-Commerce Data Analytics Project Dashboard", layout="wide")
+st.title("E-Commerce Data Analytics Project Dashboard")
+st.write("This dashboard provides insights into the dataset for our Data Analytics project. Use the filters in the sidebar to explore the data.")
+st.write('Author: Avisek Bose')
+
+st.subheader("📊 Data Visualization and Insights")
+
+# Side bar for user input
+st.sidebar.write('### Dataset:')
+st.sidebar.write('Dataset for Data Analytics.xlsx')
+st.sidebar.write('Shape of the dataset:', df.shape)
+st.sidebar.header("Filters")
+selected_product = st.sidebar.multiselect("Products", df['Product'].unique(), default=df['Product'].unique())
+selected_payment = st.sidebar.multiselect("Payment Methods", df['PaymentMethod'].unique(), default=df['PaymentMethod'].unique())
+selected_order_status = st.sidebar.multiselect("Order Status", df['OrderStatus'].unique(), default=df['OrderStatus'].unique())
+selected_coupon_code = st.sidebar.multiselect('Coupon Code', df['CouponCode'].unique(), default=df['CouponCode'].unique())
+filtered_df = df[(df['Product'].isin(selected_product)) & (df['PaymentMethod'].isin(selected_payment)) & (df['OrderStatus'].isin(selected_order_status)) & (df['CouponCode'].isin(selected_coupon_code))]
+
+# KPI Metrics
+st.subheader("📌 Key Metrics")
+col1, col2, col3 = st.columns(3)
+col1.metric("Total Orders", len(filtered_df))
+col2.metric("Total Revenue", '$' + str(round(filtered_df['TotalPrice'].sum(), 2)))
+col3.metric("Avg Order Value", '$' + str(round(filtered_df['TotalPrice'].mean(), 2)))
+
+st.subheader("📊 Histogram Analysis")
+numerical_cols = ['Quantity', 'UnitPrice', 'ItemsInCart', 'TotalPrice']
+selected_col = st.selectbox("Select Column", numerical_cols)
+fig, ax = plt.subplots(figsize=(12,5))
+ax.hist(df[selected_col], bins=20)
+ax.set_title(f"Distribution of {selected_col}")
+ax.set_xlabel(selected_col)
+ax.set_ylabel("Frequency")
+st.pyplot(fig)
+
+# Monthly Trend
+st.subheader("📈 Monthly Orders Trend")
+monthly_orders = filtered_df.groupby(filtered_df['Date'].dt.to_period('M')).size()
+fig1, ax1 = plt.subplots(figsize=(12, 5))
+monthly_orders.plot(ax=ax1, marker='o')
+ax1.set_title("Monthly Orders")
+ax1.set_xlabel("Month")
+ax1.set_ylabel("Orders")
+st.pyplot(fig1)
+st.write('### Insights:')
+st.write('No Strong Upward or Downward Trend in Monthly Orders')
+
+# Product Analysis
+st.subheader("📦 Top Products")
+product_counts = filtered_df['Product'].value_counts().sort_values()
+fig2, ax2 = plt.subplots(figsize=(12, 5))
+product_counts.plot(kind='barh', ax=ax2)
+ax2.set_title("Top 10 Products")
+st.pyplot(fig2)
+st.markdown("""
+### Product Insights:
+1. Printer is the Top-Selling Product Highest number of orders (~180+) Indicates strong demand / high utility product
+Business Action: Ensure high inventory availability Run premium pricing or bundled offers
+2. Tablet and Chair Close Behind Very similar order volumes (~175–178) Suggests consistent demand across categories (tech + furniture)
+Insight: Your business is not dependent on a single category
+3. Laptops & Desks Show Strong Mid-Level Demand Slightly lower but still high (~170 range)
+Business Action: Bundle offers: Laptop + Desk combo Increase cross-selling opportunities
+4. Monitor & Phone Slightly Lower Still strong (~155–165), but comparatively less
+Possible Reasons: Higher price sensitivity Less frequent replacement cycle
+Action: Offer discounts or EMI options Improve marketing visibility
+5. Demand is Fairly Even (Important Insight) No extreme drop-off between products All products fall within a narrow range (~150–180)
+This means: Balanced product portfolio Lower business risk (not dependent on one product)       
+6. No “Low Performer” in Top 10
+Insight: All top products are consistently contributing Suggests healthy product mix
+Advanced Business Insight
+This looks like a high-frequency retail dataset, where:
+Products are either:
+Everyday-use items Or popular electronics/furniture
+The demand distribution is relatively uniform, indicating stable consumption patterns and a diversified revenue stream.""")
+
+# Payment Method
+st.subheader("💳 Payment Methods")
+payment_counts = filtered_df['PaymentMethod'].value_counts()
+fig3, ax3 = plt.subplots(figsize=(12, 5))
+payment_counts.plot(kind='bar', ax=ax3)
+ax3.set_title("Payment Distribution")
+st.pyplot(fig3)
+st.markdown("""
+### Payment Insights:
+1. Online is the Most Preferred Payment Method Highest transactions (~260) Indicates strong digital adoption
+Business Insight: Customers prefer convenience & speed
+Action: Optimize online payment UX Offer cashback / digital discounts
+2. Cash Still Has Strong Presence Second highest (~245) Shows a hybrid customer base
+Insight: Not all users are fully digital yet
+Action: Keep cash option available, Gradually push digital via incentives
+3. Credit Card, Debit Card, Gift Card Are Similar All around (~230–235) Very close distribution
+Insight: No dominant card type Customers are flexible in payment choices
+4. Balanced Payment Ecosystem (Very Important) No method is extremely low All methods are within a tight range (~230–260)
+This means: Low dependency risk Business is well-diversified across payment channels
+5. Slight Drop from Online → Others, Online leads, but difference is not huge
+Insight: Opportunity to increase digital dominance
+Action:
+    Introduce:
+        UPI offers
+        Card cashback
+        Wallet rewards
+Advanced Business Insight
+"The payment distribution indicates a well-balanced mix of traditional and digital methods, with online payments leading slightly. This suggests a transitioning customer base where digital adoption is growing but cash and card-based transactions remain significant.""")
+            
+# Coupon Usage
+st.subheader("🎟️ Coupon Usage")
+coupon_counts = filtered_df['CouponCode'].value_counts().head(10)
+fig4, ax4 = plt.subplots(figsize=(12, 5))
+coupon_counts.plot(kind='bar', ax=ax4)
+ax4.set_title("Top Coupons")
+st.pyplot(fig4)
+st.markdown("""
+### Coupon Usage Insights
+1. FREESHIP is the Most Used Coupon Highest usage (~315) Outperforms all discount-based coupons
+Insight: Customers value free shipping more than discounts
+Business Action: Promote free shipping campaigns Use FREESHIP as a primary acquisition strategy
+2. “NO COUPON” is Almost as High Second highest (~310)
+Insight: Large number of customers are willing to buy without discounts
+What this means: Strong brand value / product demand Opportunity to increase margins
+Action: Avoid over-discounting Target only price-sensitive users with coupons
+3. WINTER15 Performs Moderately Well Mid-level usage (~290)
+Insight: Seasonal campaigns work but are not dominant
+Action: Improve timing & promotion, Combine with: Free shipping Limited-time urgency
+4. SAVE10 is the Least Used Lowest (~285)
+Insight: Flat discounts may be less attractive
+Possible Reasons: Not high enough discount Less visibility Less perceived value vs free shipping
+Action:
+    Test:
+        Higher discount (SAVE20)
+        Combo offers (SAVE10 + FREESHIP)
+5. Small Gap Between Coupons All coupons are within a narrow range (~285–315)
+This means: No single campaign dominates strongly Marketing effectiveness is moderately balanced
+6. Key Strategic Insight The data suggests that logistics-related incentives like free shipping drive higher engagement than direct discounts, while a significant portion of customers purchase without any coupon, indicating strong underlying demand.""")
+
+# Raw Data
+st.subheader("📄 Raw Data")
+st.dataframe(filtered_df)
