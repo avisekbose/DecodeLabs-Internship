@@ -9,12 +9,12 @@ df = pd.read_excel('Dataset for Data Analytics.xlsx')
 df.fillna({'CouponCode':'NO COUPON'}, inplace=True) # Handling Null Values imputing with no coupon
 
 # Page configuration
-st.set_page_config(page_title="E-Commerce Data Analytics Project Dashboard", layout="wide")
-st.title("E-Commerce Data Analytics Project Dashboard")
-st.write("This dashboard provides insights into the dataset for our Data Analytics project. Use the filters in the sidebar to explore the data.")
+st.set_page_config(page_title="E-Commerce Data Analytics Dashboard", layout="wide")
+st.title("E-Commerce Data Analytics Interactive Dashboard")
+st.write("This dashboard provides insights into the dataset for our E-Commerce Data Analytics project. Use the filters in the sidebar to explore the data.")
 st.write('Author: Avisek Bose')
 
-st.subheader("📊 Data Visualization and Insights")
+st.subheader("Data Visualization and Insights")
 
 # Side bar for user input
 st.sidebar.write('### Dataset:')
@@ -28,13 +28,13 @@ selected_coupon_code = st.sidebar.multiselect('Coupon Code', df['CouponCode'].un
 filtered_df = df[(df['Product'].isin(selected_product)) & (df['PaymentMethod'].isin(selected_payment)) & (df['OrderStatus'].isin(selected_order_status)) & (df['CouponCode'].isin(selected_coupon_code))]
 
 # KPI Metrics
-st.subheader("📌 Key Metrics")
+st.subheader("Key Metrics")
 col1, col2, col3 = st.columns(3)
 col1.metric("Total Orders", len(filtered_df))
 col2.metric("Total Revenue", '$' + str(round(filtered_df['TotalPrice'].sum(), 2)))
 col3.metric("Avg Order Value", '$' + str(round(filtered_df['TotalPrice'].mean(), 2)))
 
-st.subheader("📊 Histogram Analysis")
+st.subheader("Histogram Analysis")
 numerical_cols = ['Quantity', 'UnitPrice', 'ItemsInCart', 'TotalPrice']
 selected_col = st.selectbox("Select Column", numerical_cols)
 fig, ax = plt.subplots(figsize=(12,5))
@@ -44,7 +44,7 @@ ax.set_xlabel(selected_col)
 ax.set_ylabel("Frequency")
 st.pyplot(fig)
 
-st.subheader("📊 Box Plot Analysis")
+st.subheader("Box Plot Analysis")
 fig, ax = plt.subplots(figsize=(12,5))
 ax.boxplot(df[selected_col])
 ax.set_title(f"Box Plot of {selected_col}")
@@ -52,14 +52,14 @@ ax.set_xlabel(selected_col)
 ax.set_ylabel(selected_col)
 st.pyplot(fig)
 
-st.subheader("📊 Correlation Heatmap")
+st.subheader("Correlation Heatmap")
 corr = filtered_df[numerical_cols].corr()
 fig, ax = plt.subplots(figsize=(12, 5))
 sns.heatmap(corr, annot=True, cmap='coolwarm', ax=ax)
 st.pyplot(fig)
 
 # Monthly Trend
-st.subheader("📈 Monthly Orders Trend")
+st.subheader("Monthly Orders Trend")
 monthly_orders = filtered_df.groupby(filtered_df['Date'].dt.to_period('M')).size()
 fig1, ax1 = plt.subplots(figsize=(12, 5))
 monthly_orders.plot(ax=ax1, marker='o')
@@ -71,7 +71,7 @@ st.write('### Insights:')
 st.write('No Strong Upward or Downward Trend in Monthly Orders')
 
 # Product Analysis
-st.subheader("📦 Top Products")
+st.subheader("Top Products")
 product_counts = filtered_df['Product'].value_counts().sort_values()
 fig2, ax2 = plt.subplots(figsize=(12, 5))
 product_counts.plot(kind='barh', ax=ax2)
@@ -99,7 +99,7 @@ Everyday-use items Or popular electronics/furniture
 The demand distribution is relatively uniform, indicating stable consumption patterns and a diversified revenue stream.""")
 
 # Payment Method
-st.subheader("💳 Payment Methods")
+st.subheader("Payment Methods")
 payment_counts = filtered_df['PaymentMethod'].value_counts()
 fig3, ax3 = plt.subplots(figsize=(12, 5))
 payment_counts.plot(kind='bar', ax=ax3)
@@ -128,7 +128,7 @@ Advanced Business Insight
 "The payment distribution indicates a well-balanced mix of traditional and digital methods, with online payments leading slightly. This suggests a transitioning customer base where digital adoption is growing but cash and card-based transactions remain significant.""")
             
 # Coupon Usage
-st.subheader("🎟️ Coupon Usage")
+st.subheader("Coupon Usage")
 coupon_counts = filtered_df['CouponCode'].value_counts().head(10)
 fig4, ax4 = plt.subplots(figsize=(12, 5))
 coupon_counts.plot(kind='bar', ax=ax4)
@@ -158,7 +158,7 @@ This means: No single campaign dominates strongly Marketing effectiveness is mod
 6. Key Strategic Insight The data suggests that logistics-related incentives like free shipping drive higher engagement than direct discounts, while a significant portion of customers purchase without any coupon, indicating strong underlying demand.""")
 
 # Top 10 Customers
-st.subheader("👥 Top 10 Customers")
+st.subheader("Top 10 Customers")
 top_customers = filtered_df.groupby('CustomerID')['TotalPrice'].sum().sort_values(ascending=False).head(10)
 fig5, ax5 = plt.subplots(figsize=(12, 5))
 top_customers.plot(kind='bar', ax=ax5)

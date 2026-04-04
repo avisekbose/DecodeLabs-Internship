@@ -69,3 +69,9 @@ order by YearMonth;
 select * from datasetfordataanalytics
 order by TotalPrice desc
 limit 10;
+
+# YoY Growth
+select date_format(Date, '%Y') as Year, count(*) as Orders, round(sum(TotalPrice),2) as Revenue
+from datasetfordataanalytics
+group by Year
+order by Year;
