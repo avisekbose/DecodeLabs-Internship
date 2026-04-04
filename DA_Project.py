@@ -157,6 +157,24 @@ Action:
 This means: No single campaign dominates strongly Marketing effectiveness is moderately balanced
 6. Key Strategic Insight The data suggests that logistics-related incentives like free shipping drive higher engagement than direct discounts, while a significant portion of customers purchase without any coupon, indicating strong underlying demand.""")
 
+# Top 10 Customers
+st.subheader("👥 Top 10 Customers")
+top_customers = filtered_df.groupby('CustomerID')['TotalPrice'].sum().sort_values(ascending=False).head(10)
+fig5, ax5 = plt.subplots(figsize=(12, 5))
+top_customers.plot(kind='bar', ax=ax5)
+ax5.set_title("Top 10 Customers by Revenue")
+ax5.set_xlabel("Customer ID")
+ax5.set_ylabel("Total Revenue")
+st.pyplot(fig5)
+st.markdown("""
+### Top Customers Insights:
+1. Customer Concentration: The top 10 customers contribute a significant portion of total revenue, indicating a high customer concentration risk.
+2. Revenue Distribution: The revenue from the top customers is relatively evenly distributed, suggesting that there isn't a single dominant customer driving the majority of sales.
+3. Customer Loyalty: The presence of high-spending customers indicates potential loyalty and satisfaction with the products or services offered.
+4. Business Strategy: Focusing on retaining these top customers through personalized marketing, loyalty programs, and exclusive offers could be beneficial for sustaining revenue.
+5. Risk Management: While having high-value customers is advantageous, it also poses a risk if any of these customers were to stop purchasing. Diversifying the customer base and acquiring new customers should also be a priority to mitigate this risk.""")
+
+
 # Raw Data
 st.subheader("📄 Raw Data")
 st.dataframe(filtered_df)
