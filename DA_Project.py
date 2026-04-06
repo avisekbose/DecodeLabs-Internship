@@ -175,6 +175,18 @@ st.markdown("""
 5. Risk Management: While having high-value customers is advantageous, it also poses a risk if any of these customers were to stop purchasing. Diversifying the customer base and acquiring new customers should also be a priority to mitigate this risk.""")
 
 
-# Raw Data
-st.subheader("📄 Raw Data")
-st.dataframe(filtered_df)
+# Order Status Distribution
+st.subheader("Order Status Distribution")
+os_count = filtered_df['OrderStatus'].value_counts()
+fig6, ax6 = plt.subplots(figsize=(12, 5))
+os_count.sort_values().plot(kind='bar', ax=ax6)
+ax6.set_title("Order Status Distribution")
+ax6.set_xlabel("Order Status")
+ax6.set_ylabel("Number of Orders")
+st.pyplot(fig6)
+st.markdown("""
+### Order Status Insights:
+1. High Proportion of Completed Orders: The majority of orders are marked as "Completed," indicating a successful transaction process and customer satisfaction.
+2. Low Cancellation Rate: The number of "Cancelled" orders is relatively low, suggesting that customers are generally satisfied with their purchases and the order fulfillment process. This could also indicate effective customer service and return policies.
+3. Minimal Returns: The "Returned" status is also low, which may imply that the products meet customer expectations and that the return process is efficient.
+4. Business Implication: The high completion rate and low cancellation/return rates are positive indicators for the business, suggesting strong customer satisfaction and effective operational processes. However, continuous monitoring of these metrics is essential to maintain and improve customer experience.""")

@@ -75,3 +75,10 @@ select date_format(Date, '%Y') as Year, count(*) as Orders, round(sum(TotalPrice
 from datasetfordataanalytics
 group by Year
 order by Year;
+
+# Order Status Distribution
+select OrderStatus, count(*) as Orders,
+    round(count(*) * 100.0 / (select count(*) from datasetfordataanalytics), 2) as Percentage
+from datasetfordataanalytics
+group by OrderStatus;
+
