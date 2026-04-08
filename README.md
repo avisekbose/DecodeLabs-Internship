@@ -78,17 +78,6 @@ FROM sales_data
 GROUP BY Product
 ORDER BY Revenue DESC;
 
-📊 Dashboard (Streamlit)
-An interactive dashboard was built to visualize insights:
-Features:
-KPI Metrics (Total Orders, Revenue, AOV)
-Monthly and Yearly Trends
-Top Products Visualization
-Payment Method Distribution
-Coupon Usage Analysis
-Interactive Filters (Product, Payment Method)
-https://decodelabs-internship-bnpusdejbkyqmw8c9hugms.streamlit.app/
-
 📌 Key Business Insights
 Stable order trend indicates consistent demand
 Balanced product distribution reduces business risk
