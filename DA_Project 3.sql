@@ -29,6 +29,7 @@ where TotalPrice > 1000;
 select * from datasetfordataanalytics
 where CouponCode != 'No Coupon';
 
+# KPI Metrics
 # Total Revenue
 select round(SUM(TotalPrice),2) as TotalRevenue
 from datasetfordataanalytics;
@@ -59,8 +60,14 @@ from datasetfordataanalytics
 group by CouponCode
 order by CouponUsage desc;
 
-# Monthly Trend
-select date_format(Date, '%Y-%m') as YearMonth, count(*) as Orders, round(sum(TotalPrice),2) as Revenue
+# Monthly Order Trend
+select date_format(Date, '%Y-%m') as YearMonth, count(*) as Orders
+from datasetfordataanalytics
+group by YearMonth
+order by YearMonth;
+
+# Monthly Revenue Trend
+select date_format(Date, '%Y-%m') as YearMonth, round(sum(TotalPrice),2) as Revenue
 from datasetfordataanalytics
 group by YearMonth
 order by YearMonth;
